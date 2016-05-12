@@ -1,8 +1,9 @@
 ﻿using System;
+using Repository.Core.Validators.Interfaces;
 
 namespace Repository.Core.Validators
 {
-    public class ValidationError
+    public class ValidationError : IValidationError
     {
         #region Propreties
 

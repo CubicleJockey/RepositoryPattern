@@ -42,8 +42,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Exceptions\CustomValidationException.cs" />
+    <Compile Include="Validators\Interfaces\IValidationError.cs" />
+    <Compile Include="Validators\Interfaces\IValidationResult.cs" />
     <Compile Include="Validators\ValidationError.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Validators\ValidationResult.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
