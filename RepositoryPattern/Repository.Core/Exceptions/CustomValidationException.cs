@@ -41,7 +41,7 @@ namespace Repository.Core.Exceptions
                     var msg = new StringBuilder();
                     foreach(var error in errors)
                     {
-                        msg.AppendLine(error);
+                        msg.AppendLine(error.Message);
                     }
                     return msg.ToString();
                 }
