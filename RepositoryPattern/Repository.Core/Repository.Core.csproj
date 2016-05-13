@@ -41,7 +41,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Exceptions\CustomValidationException.cs" />
+    <Compile Include="Exceptions\ValidatorException.cs" />
     <Compile Include="Service\Interfaces\IServiceBase.cs" />
     <Compile Include="Service\ServiceBase.cs" />
     <Compile Include="UnitOfWorkProvider.cs" />

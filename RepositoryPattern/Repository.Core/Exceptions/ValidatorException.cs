@@ -1,16 +1,15 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
 using System.Text;
-using Repository.Core.Validators;
+using Repository.Core.Validators.Interfaces;
 
 namespace Repository.Core.Exceptions
 {
-    public class CustomValidationException : ValidationException
+    public class ValidatorException : ValidationException
     {
         #region Fields
 
-        private readonly IEnumerable<ValidationError> errors;
+        private readonly IEnumerable<IValidationError> errors;
 
         #endregion Fields
 
@@ -18,7 +17,7 @@ namespace Repository.Core.Exceptions
 
         #region Constructors
 
-        public CustomValidationException(IEnumerable<ValidationError> errors)
+        public ValidatorException(IEnumerable<IValidationError> errors)
         {
             this.errors = errors;
         }

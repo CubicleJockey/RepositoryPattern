@@ -6,7 +6,7 @@ namespace Repository.Core
     {
         #region Fields
 
-        private T _readOnly = default(T);
+        private static  T _readOnly = default(T);
 
         #endregion Fields
 

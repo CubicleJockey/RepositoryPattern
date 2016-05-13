@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Repository.Core.Validators;
@@ -65,14 +61,29 @@ namespace Repository.Core.UnitTests.Validators
                     Thingy = "I am a thingy string."
                 };
 
-                const string EXPECTED_MESSAGE = "Random Object as failed";
-                const string EXPECTED_PROPERTYNAME = nameof(randomObject.Thingy);
-
-                var error = new ValidationError(EXPECTED_MESSAGE, EXPECTED_PROPERTYNAME);
+                var error = new ValidationError("Random Object as failed", nameof(randomObject.Thingy));
 
                 error.Should().NotBeNull();
                 error.Should().BeAssignableTo<IValidationError>();
                 error.Should().BeOfType<ValidationError>();
+            }
+        }
+
+        [TestClass]
+        public class PropertyTests
+        {
+            [TestMethod]
+            public void PropertiesReturnProperly()
+            {
+                var randomObject = new
+                {
+                    Thingy = "I am a thingy string."
+                };
+
+                const string EXPECTED_MESSAGE = "Random Object as failed";
+                const string EXPECTED_PROPERTYNAME = nameof(randomObject.Thingy);
+
+                var error = new ValidationError(EXPECTED_MESSAGE, EXPECTED_PROPERTYNAME);
 
                 error.Message.Should().NotBeNullOrWhiteSpace();
                 error.Message.Should().BeEquivalentTo(EXPECTED_MESSAGE);
