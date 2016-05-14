@@ -1,10 +1,13 @@
 ﻿using System;
+using System.Text;
 using FakeItEasy;
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Repository.Core.Exceptions;
 using Repository.Core.Service;
 using Repository.Core.Service.Interfaces;
 using Repository.Core.UnitOfWork;
+using Repository.Core.Validators;
 using Repository.Core.Validators.Interfaces;
 
 namespace Repository.Core.UnitTests.Service
@@ -123,7 +126,45 @@ namespace Repository.Core.UnitTests.Service
                 A.CallTo(() => fakeValidator.Validate(ENTITY)).Returns(fakeValidationResult);
 
                 var service = new MockService<IUnitOfWorkProvider<IUnitOfWork>, IUnitOfWork, string>(fakeProvider, fakeValidator);
-                
+                service.Validate(ENTITY);
+
+                A.CallTo(() => fakeValidator.Validate(ENTITY)).MustHaveHappened();
+            }
+
+            [TestMethod]
+            public void Validate_Errors()
+            {
+                const string ENTITY = "Entity";
+                var errors = new[]
+                {
+                    new ValidationError("A", "A"),
+                    new ValidationError("B", "B")
+                };
+
+                A.CallTo(() => fakeValidationResult.IsValid).Returns(false);
+                A.CallTo(() => fakeValidationResult.Errors).Returns(errors);
+                A.CallTo(() => fakeValidator.Validate(ENTITY)).Returns(fakeValidationResult);
+
+                try
+                {
+                    var service = new MockService<IUnitOfWorkProvider<IUnitOfWork>, IUnitOfWork, string>(fakeProvider, fakeValidator);
+                    service.Validate(ENTITY);
+
+                }
+                catch(ValidatorException vx)
+                {
+                    A.CallTo(() => fakeValidator.Validate(ENTITY)).MustHaveHappened();
+                    A.CallTo(() => fakeValidationResult.IsValid).MustHaveHappened();
+
+                    var sb = new StringBuilder();
+                    sb.AppendLine("A").AppendLine("B");
+
+                    vx.Message.Should().NotBeNullOrWhiteSpace();
+                    vx.Message.Should().BeEquivalentTo(sb.ToString());
+
+                    return;
+                }
+                Assert.Fail($"Should have gotten an exception of type {typeof(ValidationError)}.");
             }
         }
     }

@@ -13,6 +13,19 @@ namespace Repository.Core.UnitTests.Service
         {
         }
 
-        
+        public new TUnitOfWork GetReadonlyUnitOfWork()
+        {
+            return base.GetReadonlyUnitOfWork();
+        }
+
+        public new TUnitOfWork GetTransactionalUnitOfWork()
+        {
+            return base.GetTransactionalUnitOfWork();
+        }
+
+        public new void Validate(TEntity entity)
+        {
+            base.Validate(entity);
+        }
     }
 }

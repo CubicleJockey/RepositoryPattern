@@ -56,7 +56,7 @@ namespace Repository.Core.Service
             return unitOfWork;
         }
 
-        protected void Validate(TEntity entity)
+        protected virtual void Validate(TEntity entity)
         {
             var result = _validator.Validate(entity);
             if(!result.IsValid)
