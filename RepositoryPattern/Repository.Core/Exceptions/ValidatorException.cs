@@ -32,7 +32,8 @@ namespace Repository.Core.Exceptions
         /// <returns>
         /// The error message that explains the reason for the exception, or an empty string ("").
         /// </returns>
-        public override string Message {
+        public override string Message
+        {
             get
             {
                 if(errors != null)

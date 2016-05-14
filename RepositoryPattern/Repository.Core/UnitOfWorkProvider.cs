@@ -6,11 +6,10 @@ namespace Repository.Core
     {
         #region Fields
 
-        private static  T _readOnly = default(T);
+        private static readonly T _readOnly = default(T);
 
         #endregion Fields
-
-
+        
         protected abstract T GetNew();
 
         public T GetReadOnly() => _readOnly == null ? GetNew() : _readOnly;

@@ -20,14 +20,13 @@ namespace Repository.Core.UnitTests.Service
         {
             private static IValidator<string> fakeValidator;
             private static IUnitOfWorkProvider<IUnitOfWork> fakeProvider;
-
+            
             [ClassInitialize]
             public static void ClassInitialize(TestContext context)
             {
                 fakeValidator = A.Fake<IValidator<string>>();
                 fakeProvider = A.Fake<IUnitOfWorkProvider<IUnitOfWork>>();
             }
-
 
             [TestMethod]
             [ExpectedException(typeof(ArgumentNullException), "workProvider")]
@@ -82,8 +81,8 @@ namespace Repository.Core.UnitTests.Service
 
                 valid.Should().BeFalse();
 
-                A.CallTo(() => fakeValidationResult.IsValid).MustHaveHappened();
-                A.CallTo(() => fakeValidator.Validate(ENTITY)).MustHaveHappened();
+                A.CallTo(() => fakeValidationResult.IsValid).MustHaveHappened(Repeated.Exactly.Once);
+                A.CallTo(() => fakeValidator.Validate(ENTITY)).MustHaveHappened(Repeated.Exactly.Once);
             }
 
             [TestMethod]
@@ -113,8 +112,8 @@ namespace Repository.Core.UnitTests.Service
 
                 valid.Should().BeTrue();
 
-                A.CallTo(() => fakeValidationResult.IsValid).MustHaveHappened();
-                A.CallTo(() => fakeValidator.Validate(ENTITY)).MustHaveHappened();
+                A.CallTo(() => fakeValidationResult.IsValid).MustHaveHappened(Repeated.Exactly.Once);
+                A.CallTo(() => fakeValidator.Validate(ENTITY)).MustHaveHappened(Repeated.Exactly.Once);
             }
 
             [TestMethod]
@@ -128,7 +127,7 @@ namespace Repository.Core.UnitTests.Service
                 var service = new MockService<IUnitOfWorkProvider<IUnitOfWork>, IUnitOfWork, string>(fakeProvider, fakeValidator);
                 service.Validate(ENTITY);
 
-                A.CallTo(() => fakeValidator.Validate(ENTITY)).MustHaveHappened();
+                A.CallTo(() => fakeValidator.Validate(ENTITY)).MustHaveHappened(Repeated.Exactly.Once);
             }
 
             [TestMethod]
@@ -165,6 +164,62 @@ namespace Repository.Core.UnitTests.Service
                     return;
                 }
                 Assert.Fail($"Should have gotten an exception of type {typeof(ValidationError)}.");
+            }
+
+            [TestMethod]
+            [ExpectedException(typeof(ArgumentNullException), "unitOfWork")]
+            public void GetTransactionalUnitOfWork_Null()
+            {
+                A.CallTo(() => fakeProvider.GetTransactional()).Returns(null);
+
+                var service = new MockService<IUnitOfWorkProvider<IUnitOfWork>, IUnitOfWork, string>(fakeProvider, fakeValidator);
+                service.GetTransactionalUnitOfWork();
+
+                A.CallTo(() => fakeProvider.GetTransactional()).MustHaveHappened(Repeated.Exactly.Once);
+            }
+
+            [TestMethod]
+            public void GetTransactionalUnitOfWork()
+            {
+                var unitOfWork = A.Dummy<IUnitOfWork>();
+                A.CallTo(() => fakeProvider.GetTransactional()).Returns(unitOfWork);
+
+                var service = new MockService<IUnitOfWorkProvider<IUnitOfWork>, IUnitOfWork, string>(fakeProvider, fakeValidator);
+                var returnedUnitOfWork = service.GetTransactionalUnitOfWork();
+
+                returnedUnitOfWork.Should().NotBeNull();
+                returnedUnitOfWork.Should().BeAssignableTo<IUnitOfWork>();
+                returnedUnitOfWork.ShouldBeEquivalentTo(unitOfWork);
+
+                A.CallTo(() => fakeProvider.GetTransactional()).MustHaveHappened(Repeated.Exactly.Once);
+            }
+
+            [TestMethod]
+            [ExpectedException(typeof(ArgumentNullException), "unitOfWork")]
+            public void GetReadonlyUnitOfWork_Null()
+            {
+                A.CallTo(() => fakeProvider.GetReadOnly()).Returns(null);
+
+                var service = new MockService<IUnitOfWorkProvider<IUnitOfWork>, IUnitOfWork, string>(fakeProvider, fakeValidator);
+                service.GetReadonlyUnitOfWork();
+
+                A.CallTo(() => fakeProvider.GetReadOnly()).MustHaveHappened(Repeated.Exactly.Once);
+            }
+
+            [TestMethod]
+            public void GetReadonlyUnitOfWork()
+            {
+                var unitOfWork = A.Dummy<IUnitOfWork>();
+                A.CallTo(() => fakeProvider.GetReadOnly()).Returns(unitOfWork);
+
+                var service = new MockService<IUnitOfWorkProvider<IUnitOfWork>, IUnitOfWork, string>(fakeProvider, fakeValidator);
+                var returnedUnitOfWork = service.GetReadonlyUnitOfWork();
+
+                returnedUnitOfWork.Should().NotBeNull();
+                returnedUnitOfWork.Should().BeAssignableTo<IUnitOfWork>();
+                returnedUnitOfWork.ShouldBeEquivalentTo(unitOfWork);
+
+                A.CallTo(() => fakeProvider.GetReadOnly()).MustHaveHappened(Repeated.Exactly.Once);
             }
         }
     }
